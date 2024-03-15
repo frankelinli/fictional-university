@@ -358,6 +358,78 @@ add_action('after_setup_theme', 'university_features');
 
 `$file` 的根目录是当前主题文件夹
 
+### `is_category()`
+
+返回当前页面是否为分类的存档页面
+
+### `is_author()`
+
+返回当前页面是否为某作者的存档页面
+
+### `single_cat_title()`
+
+输出当前分类标签名称
+
+### `the_author()`
+
+输出当前作者名称
+
+### `the_archive_title()`
+
+输出当前存档标题，会自动根据存档类别来设置合适的标题，如分类、作者、年、月、日等
+
+### `the_archive_description()`
+
+输出当前存档的描述，在管理后台可以设置具体的描述
+
+对于作者存档，将会输出作者的个人说明
+
+对于分类存档，将会输出分类的描述
+
+### `WP_Query()`
+
+自定义查询，不使用默认的博客查询，而是自己指定参数进行查询
+
+良好的习惯：在 `while` 循环结束之后，使用 `wp_reset_postdata()` 重置文章数据
+
+示例：
+
+```php
+<?php
+  $homepagePosts = new WP_Query(array(
+    'posts_per_page' => 2, // 指定每页显示的博客数量
+    'post_type' => 'post', // 指定博客类型为文章
+    'post_status' => 'publish', // 指定博客状态'
+  ));
+
+  while($homepagePosts->have_posts()) {
+    $homepagePosts->the_post();
+?>
+  <li><?php the_title(); ?></li>
+<?php
+  }
+  wp_reset_postdata(); // 重置文章数据，一个好的习惯
+?>
+```
+
+### `wp_reset_postdata()`
+
+重置文章数据，一般在使用完自定义查询之后要调用一次
+
+### `wp_trim_words()`
+
+返回限制字数之后的内容
+
+示例：
+
+```php
+<?php echo wp_trim_words(get_the_content(), 18); ?>
+```
+
+### `get_post_type()`
+
+获取帖子类型，如 `post`、`page`
+
 ## 关于 WordPress 内置函数是否输出到页面上
 
 例如以下函数

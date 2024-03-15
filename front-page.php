@@ -47,29 +47,34 @@
     <div class="full-width-split__two">
       <div class="full-width-split__inner">
         <h2 class="headline headline--small-plus t-center">来自我们的博客</h2>
+        <?php
+          $homepagePosts = new WP_Query(array(
+            'posts_per_page' => 2, // 指定每页显示的博客数量
+            'post_type' => 'post', // 指定博客类型为文章
+            'post_status' => 'publish', // 指定博客状态'
+          ));
 
-        <div class="event-summary">
-          <a class="event-summary__date event-summary__date--beige t-center" href="#">
-            <span class="event-summary__month">一月</span>
-            <span class="event-summary__day">20</span>
-          </a>
-          <div class="event-summary__content">
-            <h5 class="event-summary__title headline headline--tiny"><a href="#">我们被评为最佳学校</a></h5>
-            <p>我们连续 100 年被评为第一。 <a href="#" class="nu gray">阅读更多</a></p>
+          while($homepagePosts->have_posts()) {
+            $homepagePosts->the_post();
+        ?>
+          <div class="event-summary">
+            <a class="event-summary__date event-summary__date--beige t-center" href="<?php the_permalink(); ?>">
+              <span class="event-summary__month"><?php the_time('M'); ?></span>
+              <span class="event-summary__day"><?php the_time('d'); ?></span>
+            </a>
+            <div class="event-summary__content">
+              <h5 class="event-summary__title headline headline--tiny">
+                <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+              </h5>
+              <p><?php echo wp_trim_words(get_the_content(), 36); ?><a href="<?php the_permalink(); ?>" class="nu gray">阅读更多</a></p>
+            </div>
           </div>
-        </div>
-        <div class="event-summary">
-          <a class="event-summary__date event-summary__date--beige t-center" href="#">
-            <span class="event-summary__month">二月</span>
-            <span class="event-summary__day">04</span>
-          </a>
-          <div class="event-summary__content">
-            <h5 class="event-summary__title headline headline--tiny"><a href="#">全国闻名的教授</a></h5>
-            <p>我们的两位教授最近出现在全国新闻中。<a href="#" class="nu gray">阅读更多</a></p>
-          </div>
-        </div>
+        <?php
+          }
+          wp_reset_postdata(); // 重置文章数据
+        ?>
 
-        <p class="t-center no-margin"><a href="#" class="btn btn--yellow">查看所有博客文章</a></p>
+        <p class="t-center no-margin"><a href="<?php echo site_url('/blog'); ?>" class="btn btn--yellow">查看所有博客文章</a></p>
       </div>
     </div>
   </div>

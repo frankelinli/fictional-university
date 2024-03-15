@@ -32,7 +32,16 @@
             <li><a href="#">应用程序</a></li>
             <li><a href="#">活动</a></li>
             <li><a href="#">校园</a></li>
-            <li><a href="#">博客</a></li>
+            <li
+              <?php
+                // 如果当前页面类型是文章，则博客会被标记为当前项
+                if (get_post_type() == 'post') {
+                  echo 'class="current-menu-item"' ;
+                }
+              ?>
+            >
+              <a href="<?php echo site_url('/blog'); ?>">博客</a>
+            </li>
           </ul>
         </nav>
         <div class="site-header__util">
