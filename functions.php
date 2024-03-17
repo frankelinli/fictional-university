@@ -24,4 +24,27 @@
   }
 
   add_action('after_setup_theme', 'university_features');
+
+  // 修改存档页面默认查询配置
+  function university_adjust_queries($query) {
+    // 如果当前是存档页面，且是事件存档页面，且是主查询，则修改查询条件
+    if (!is_admin() and is_post_type_archive('event') and $query->is_main_query()) {
+      $today = date('Ymd');
+      
+      $query->set('meta_key', 'event_date'); // 自定义字段名
+      $query->set('orderby', 'meta_value_num'); // 通过自定义字段的值来排序
+      $query->set('order', 'ASC'); // 升序
+      $query->set('meta_query', [ // 多条件查询
+        [
+          'key' => 'event_date', // 字段名
+          'compare' => '>=', // 比较符
+          'value' => $today, // 比较值
+          'type' => 'numeric' // 指定类型为数值
+        ]
+      ]);
+    }
+  }
+
+  // 在查询前执行函数
+  add_action('pre_get_posts', 'university_adjust_queries');
 ?>

@@ -47,7 +47,7 @@
         </div>
     <?php
       }
-      echo paginate_links();
+      echo paginate_links(); // 输出分页器
     ?>
   </div>
 

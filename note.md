@@ -69,6 +69,12 @@ WordPress 会加载该文件作为主题预览图，若存在同名不同格式�
   ?>
 ```
 
+## `single-*.php`
+
+自定义类型的单篇帖子页面
+
+如：注册了自定义类型 `event` ，则可以通过 `single-event.php` 文件来接管对 `/event/*` 的访问请求
+
 ## `page.php`
 
 WordPress 页面的载体，使用方法：
@@ -89,6 +95,22 @@ WordPress 页面的载体，使用方法：
     get_footer();
   ?>
 ```
+
+## `page-*.php`
+
+在 `page` 后面接上页面的固定链接，即可成为该页面的模板文件
+
+例如：新建一篇页面，设置固定链接为 `past-events`，则主题文件夹下的 `page-past-events.php` 文件是模板文件
+
+## `archive.php`
+
+帖子归档页面
+
+## `archive-*.php`
+
+自定义帖子的归档页面
+
+如：注册了自定义类型 `event` ，则可以通过 `archive-event.php` 文件来接管对 `/event/` 的访问请求
 
 ## `header.php`
 
@@ -133,6 +155,8 @@ WordPress 页面的载体，使用方法：
 ## `functions.php`
 
 在此调用wordpress钩子函数注册一些事件，比如加载css、js文件，注册菜单位置等
+
+在主题的 `functions.php` 文件中定义的函数，其他主题文件和插件文件也是可以使用的。因为 `functions.php` 文件中定义的函数在WordPress加载时会被载入到全局作用域中，因此其他文件可以调用这些函数。
 
 ```php
 <?php
@@ -270,17 +294,64 @@ add_action('after_setup_theme', 'university_features');
 
 在 WordPress 后台管理界面设置菜单：`外观 => 菜单`
 
+# 自定义帖子类型
+
+一般使用**必须插件**来注册自定义帖子类型，启用后就不必担心后台关闭该插件而无法访问已创建的数据
+
+**注意：WordPress不会自动更新新的页面类型的永久链接，需要手动在设置里更新**
+
+示例：
+
+`/wp-content/mu-plugins/university-post-types.php`
+
+```php
+<?php
+  // 自定义post类型
+  function university_post_types() {
+    // 添加文章类型
+    register_post_type('event', array(
+      'rewrite' => array(
+        'slug' => 'events', // 文章类型显示的固定链接
+      ),
+      'has_archive' => true, // 是否有文章归档页面
+      'public' => true, // 对外可见
+      'labels' => array(
+        'name' => '活动', // 文章类型的名称
+        'add_new_item' => '添加活动', // 添加新文章时编辑页面的标题
+        'add_new' => '添加活动', // 在WordPress后台菜单中显示的链接文本
+        'all_items' => '所有活动', // 显示所有活动的按钮文本
+        'edit_item' => '编辑活动', // 编辑活动的按钮文本
+        'new_item' => '新建活动', // 新建活动的按钮文本
+        'view_item' => '查看活动', // 查看活动的按钮文本
+        'search_items' => '搜索活动', // 搜索活动的按钮文本
+        'not_found' => '未找到活动', // 没有找到活动时的提示信息
+        'not_found_in_trash' => '未找到活动', // 回收站中没有找到活动时的提示信息
+        'single_name' => '活动' // 单个活动的提示信息
+      ),
+      'menu_icon' => 'dashicons-calendar' // 值：WordPress Dashicons（https://developer.wordpress.org/resource/dashicons）
+    ));
+  }
+  // 添加自定义的post类型
+  add_action('init', 'university_post_types');
+?>
+```
+
+# 自定义字段
+
+因为使用自定义类型中的 `supports` 字段添加 `custom-fields` 对用户来说不友好，用户需要自己设置字段名称和类型。而我们不需要重复造轮子，所以一般使用行业标准（自定义字段）插件，这两个插件之一是必备插件，使用插件需要先清除自定义类型配置 `supports=>custom-fields`
+
+有两个可以选择：
+
+- Advanced Custom Fields(ACF)
+- CMB2(Custom Metaboxes 2)
+
+使用 `Advanced Custom Fields(ACF)` 插件后，可以在文章中使用 `the_field('event_date')` 输出自定义日期字段的值，或使用 `get_field('event_date')` 获取自定义日期字段的值
+
 # 其他
 
 ## WordPress 函数
 
 所有函数查看：https://developer.wordpress.org/reference/functions/
-
-### `wp_get_post_parent_id()`
-
-`wp_get_post_parent_id($post=null)`
-
-返回帖子的父级ID，`int`或`false`
 
 ### `have_posts()`
 
@@ -299,6 +370,10 @@ add_action('after_setup_theme', 'university_features');
 	}
 ?>
 ```
+
+### `has_excerpt()`
+
+返回文章是否有摘要
 
 ### `the_title()`
 
@@ -332,31 +407,25 @@ add_action('after_setup_theme', 'university_features');
 
 输出帖子的发布时间
 
-### `get_the_category_list()`
-
-`get_the_category_list(string $separator='', string $parents='', int $post_id=false): string`
-
-获取当前帖子所有的标签，并以 `$separator` 进行拼接
-
-`$parents` 如何展现父分类。接受 `'multiple'` 、 `'single'` 或空。
-
 ### `paginate_links()`
 
 获取博客分页器，需要加上 `echo` 进行输出
 
 当帖子数量不足分页数量时，不会输出分页器
 
+默认情况下，输出默认查询的分页器，如果想要输出自定义查询的分页器，需要指定参数：
+
+```php
+echo paginate_links([
+  // $pastEvents为自定义查询对象
+  // 将自定义查询得到的所有页面数量传给分页器
+  'total' => $pastEvents->max_num_pages
+]);
+```
+
 ### `site_url()`
 
 返回站点路径的绝对地址，会自动拼接站点部署的域名
-
-### `get_theme_file_uri()`
-
-`get_theme_file_uri(string $file=''):string`
-
-检索并返回主题中文件的 URL
-
-`$file` 的根目录是当前主题文件夹
 
 ### `is_category()`
 
@@ -396,11 +465,23 @@ add_action('after_setup_theme', 'university_features');
 
 ```php
 <?php
-  $homepagePosts = new WP_Query(array(
-    'posts_per_page' => 2, // 指定每页显示的博客数量
-    'post_type' => 'post', // 指定博客类型为文章
-    'post_status' => 'publish', // 指定博客状态'
-  ));
+  $today = date('Ymd');
+  $homepageEvents = new WP_Query([
+    'paged' => get_query_var('paged', 1), // 获取url查询页码，默认值设置为1
+    'posts_per_page' => 2,
+    'post_type' => 'event',
+    'meta_key' => 'event_date', // 自定义字段名
+    'orderby' => 'meta_value_num', // 通过自定义字段的值来排序
+    'order' => 'ASC', // 升序
+    'meta_query' => [ // 多条件查询
+      [
+        'key' => 'event_date', // 字段名
+        'compare' => '>=', // 比较符
+        'value' => $today, // 比较值
+        'type' => 'numeric' // 指定类型为数值
+      ]
+    ]
+  ]);
 
   while($homepagePosts->have_posts()) {
     $homepagePosts->the_post();
@@ -411,6 +492,12 @@ add_action('after_setup_theme', 'university_features');
   wp_reset_postdata(); // 重置文章数据，一个好的习惯
 ?>
 ```
+
+### `wp_get_post_parent_id()`
+
+`wp_get_post_parent_id($post=null)`
+
+返回帖子的父级ID，`int`或`false`
 
 ### `wp_reset_postdata()`
 
@@ -426,9 +513,62 @@ add_action('after_setup_theme', 'university_features');
 <?php echo wp_trim_words(get_the_content(), 18); ?>
 ```
 
+**不足：**中文字符串每个字符会当成一个单词，因此中文字符串使用该函数实际返回的字符会比较少
+
+可以使用自定义函数来弥补：
+
+```php
+function custom_trim_characters($text, $length, $append = '&hellip;') {
+  if (mb_strlen($text) > $length) {
+    $text = mb_substr($text, 0, $length) . $append;
+  }
+  return $text;
+}
+$trimmed_text = custom_trim_characters(get_the_content(), 100); // 100 是想要裁切的字符数
+echo $trimmed_text;
+```
+
+### `get_the_excerpt()`
+
+返回文章的摘要
+
+### `get_the_category_list()`
+
+`get_the_category_list(string $separator='', string $parents='', int $post_id=false): string`
+
+获取当前帖子所有的标签，并以 `$separator` 进行拼接
+
+`$parents` 如何展现父分类。接受 `'multiple'` 、 `'single'` 或空。
+
+### `get_theme_file_uri()`
+
+`get_theme_file_uri(string $file=''):string`
+
+检索并返回主题中文件的 URL
+
+`$file` 的根目录是当前主题文件夹
+
 ### `get_post_type()`
 
 获取帖子类型，如 `post`、`page`
+
+### `get_post_type_archive_link()`
+
+`get_post_type_archive_link(string $type)`
+
+获取帖子的存档页面
+
+### `get_query_var()`
+
+`get_query_var(string $query_var, mixed $default_value=''): mixed`
+
+获取url中包含的查询参数
+
+可以用来获取分页数：
+
+```php
+get_query_var('paged', 1); // 获取url中指定的分页数，如果未指定，使用默认1
+```
 
 ## 关于 WordPress 内置函数是否输出到页面上
 
@@ -442,3 +582,10 @@ the_ID()
 get_the_id()
 ```
 以 `get` 开头的函数不会输出到页面上，以 `the` 开头的函数会输出到页面上
+
+## 必须插件（must-use-plugins）
+
+在 `/wp-content/mu-plugins` 目录里面的文件会被作为必须使用的插件加载，无法在管理后台禁用该插件
+
+可以用于自定义帖子类型，启用后就不必担心后台关闭该插件而无法访问已创建的数据
+
