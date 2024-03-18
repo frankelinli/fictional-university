@@ -27,7 +27,7 @@
 
   // 修改存档页面默认查询配置
   function university_adjust_queries($query) {
-    // 如果当前是存档页面，且是事件存档页面，且是主查询，则修改查询条件
+    // 如果当前不是管理员界面，且是事件存档页面，且是主查询，则修改查询条件
     if (!is_admin() and is_post_type_archive('event') and $query->is_main_query()) {
       $today = date('Ymd');
       
@@ -42,6 +42,13 @@
           'type' => 'numeric' // 指定类型为数值
         ]
       ]);
+    }
+    
+    // 如果当前不是管理员界面，且是学科存档页面，且是主查询，则修改查询条件
+    if (!is_admin() and is_post_type_archive('program') and $query->is_main_query()) {
+      $query->set('posts_per_page', -1); // 不限制每页大小
+      $query->set('orderby', 'title');
+      $query->set('order', 'ASC');
     }
   }
 

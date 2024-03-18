@@ -11,7 +11,7 @@
       <h1 class="headline headline--large">欢迎!</h1>
       <h2 class="headline headline--medium">我们认为你会喜欢这里。</h2>
       <h3 class="headline headline--small">为什么不看看你感兴趣的<strong>专业</strong>呢？</h3>
-      <a href="#" class="btn btn--large btn--blue">寻找你的专业</a>
+      <a href="<?php echo get_post_type_archive_link('program'); ?>" class="btn btn--large btn--blue">寻找你的专业</a>
     </div>
   </div>
 

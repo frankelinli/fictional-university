@@ -14,8 +14,8 @@
               <nav class="nav-list">
                 <ul>
                   <li><a href="<?php echo site_url('/关于我们'); ?>">关于我们</a></li>
-                  <li><a href="#">应用程序</a></li>
-                  <li><a href="#">活动</a></li>
+                  <li><a href="<?php echo get_post_type_archive_link('program'); ?>">学科</a></li>
+                  <li><a href="<?php echo get_post_type_archive_link('event'); ?>">活动</a></li>
                   <li><a href="#">校园</a></li>
                 </ul>
               </nav>

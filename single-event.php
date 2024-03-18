@@ -34,6 +34,30 @@
     <div class="generic-content">
       <?php the_content(); ?>
     </div>
+
+    <?php
+      $relatedPrograms = get_field('related_programs');
+      if ($relatedPrograms) {
+        // 如果活动绑定了相关学科，则显示相关学科的列表
+    ?>
+        <hr class="section-break">
+        <h2 class="headline headline--medium">相关学科</h2>
+        <ul class="link-list min-list">
+          <?php
+            foreach($relatedPrograms as $program) {
+          ?>
+              <li>
+                <a href="<?php echo get_the_permalink($program->ID); ?>">
+                  <?php echo $program->post_title; ?>
+                </a>
+              </li>
+          <?php
+            }
+          ?>
+        </ul>
+    <?php
+      }
+    ?>
   </div>
 <?php
   get_footer();
