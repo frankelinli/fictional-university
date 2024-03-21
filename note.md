@@ -187,6 +187,13 @@ WordPress 页面的载体，使用方法：
 
     // 标题通过wordpress生成
     add_theme_support('title-tag');
+    // 启用文章特色图
+    add_theme_support('post-thumbnails');
+    // 图像尺寸设置：尺寸名（无特殊要求）, 图像宽, 图像高, 是否裁切（默认根据中心裁切）
+    // 第四个参数可以传入数组，来控制裁切中心：array('left', 'top')
+    // 如果想要手动裁切图片，可以使用插件（Manual Image Crop）
+    add_image_size('教授横向缩略图', 400, 260, true);
+    add_image_size('教授纵向缩略图', 480, 650, true);
   }
 
   add_action('after_setup_theme', 'university_features');
@@ -407,6 +414,14 @@ add_action('after_setup_theme', 'university_features');
 
 输出帖子的发布时间
 
+### `the_post_thumbnail()`
+
+`the_post_thumbnail(string|int[] $size='post-thumbnail', string|array $attr='')`
+
+获取文章特色图片，如果不传参数，获取特色图片源文件，可以传入缩略图的名称，来引用某种尺寸的缩略图
+
+可以在 [functions.php](#functions.php) 中定义自定义的缩略图尺寸
+
 ### `paginate_links()`
 
 获取博客分页器，需要加上 `echo` 进行输出
@@ -588,4 +603,80 @@ get_the_id()
 在 `/wp-content/mu-plugins` 目录里面的文件会被作为必须使用的插件加载，无法在管理后台禁用该插件
 
 可以用于自定义帖子类型，启用后就不必担心后台关闭该插件而无法访问已创建的数据
+
+## 其他插件
+
+- [Regenerate Thumbnails](https://cn.wordpress.org/plugins/regenerate-thumbnails/)：根据新的缩略图设置为历史图片生成新的缩略图
+- [Manual Image Crop](https://cn.wordpress.org/plugins/manual-image-crop/)：手动裁切上传的图片
+
+## 将重复的模板代码提取到函数中
+
+### 自定义函数
+
+适用于需要灵活的模板，比如可以传入定制参数
+
+1. 在 `function.php` 文件中定义函数
+
+   ```php
+   // banner模块
+     function pageBanner($args=[]) {
+       if (empty($args['title'])) {
+         $args['title'] = get_the_title();
+       }
+   
+       if (empty($args['subtitle'])) {
+         $args['subtitle'] = get_field('page_banner_subtitle');
+       }
+   
+       if (empty($args['photo'])) {
+         if (get_field('page_banner_background_image')) {
+           $args['photo'] = get_field('page_banner_background_image')['sizes']['页面顶部栏'];
+         } else {
+           $args['photo'] = get_theme_file_uri('/images/ocean.jpg');
+         }
+       }
+   ?>
+       <div class="page-banner">
+         <div
+           class="page-banner__bg-image"
+           style="background-image: url(<?php echo $args['photo']; ?>)"
+         ></div>
+         <div class="page-banner__content container container--narrow">
+           <h1 class="page-banner__title"><?php echo $args['title']; ?></h1>
+           <div class="page-banner__intro">
+             <p><?php echo $args['subtitle']; ?></p>
+           </div>
+         </div>
+       </div>
+   <?php
+     }
+   ```
+
+2. 在其他文件中调用该函数获取通用的banner
+
+   ```php
+   <?php
+     get_header();
+     pageBanner([
+       'title' => '过去的活动',
+       'subtitle' => '回顾我们过去的活动'
+     ]);
+   ?>
+     <!-- 该模板的其他HTML内容 -->
+   ```
+
+### 使用 `get_template_part` 函数
+
+将页面模板保存到单独的php文件中，该模板内使用的变量名等都会在运行时使用引用它的位置的上下文
+
+适用于比较固定的模板
+
+```php
+// 无需php后缀
+// 假如传入第二个参数 'test'
+// 则等同于第一参数传入了 'template-parts/event-test'
+// 基于这一点，可以将第二参数改为动态函数，然后可以实现自动加载特定的模板
+// 例如使用 get_post_type()
+get_template_part('template-parts/event');
+```
 

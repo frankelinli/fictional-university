@@ -1,19 +1,10 @@
 <?php
   get_header();
+  pageBanner([
+    'title' => '欢迎来到我们的博客！',
+    'subtitle' => '跟上我们最新的消息。'
+  ]);
 ?>
-
-  <div class="page-banner">
-    <div
-      class="page-banner__bg-image"
-      style="background-image: url(<?php echo get_theme_file_uri('/images/ocean.jpg'); ?>)"
-    ></div>
-    <div class="page-banner__content container container--narrow">
-      <h1 class="page-banner__title">欢迎来到我们的博客！</h1>
-      <div class="page-banner__intro">
-        <p>跟上我们最新的消息。</p>
-      </div>
-    </div>
-  </div>
 
   <div class="container container--narrow page-section">
     <?php

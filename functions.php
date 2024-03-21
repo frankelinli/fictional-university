@@ -1,4 +1,38 @@
 <?php
+  // banner模块
+  function pageBanner($args=[]) {
+    if (empty($args['title'])) {
+      $args['title'] = get_the_title();
+    }
+
+    if (empty($args['subtitle'])) {
+      $args['subtitle'] = get_field('page_banner_subtitle');
+    }
+
+    if (empty($args['photo'])) {
+      if (get_field('page_banner_background_image')) {
+        $args['photo'] = get_field('page_banner_background_image')['sizes']['页面顶部栏'];
+      } else {
+        $args['photo'] = get_theme_file_uri('/images/ocean.jpg');
+      }
+    }
+?>
+    <div class="page-banner">
+      <div
+        class="page-banner__bg-image"
+        style="background-image: url(<?php echo $args['photo']; ?>)"
+      ></div>
+      <div class="page-banner__content container container--narrow">
+        <h1 class="page-banner__title"><?php echo $args['title']; ?></h1>
+        <div class="page-banner__intro">
+          <p><?php echo $args['subtitle']; ?></p>
+        </div>
+      </div>
+    </div>
+<?php
+  }
+
+
   // 加载样式表
   function university_files() {
     // 第一个参数为id，第二个参数为文件路径
@@ -21,6 +55,13 @@
   function university_features() {
     // 标题通过wordpress生成
     add_theme_support('title-tag');
+    // 启用文章特色图
+    add_theme_support('post-thumbnails');
+    // 图像尺寸设置：尺寸名（无特殊要求）, 图像宽, 图像高, 是否裁切（默认根据中心裁切）
+    // 第四个参数可以传入数组，来控制裁切中心：array('left', 'top')
+    add_image_size('教授横向缩略图', 400, 260, true);
+    add_image_size('教授纵向缩略图', 480, 650, true);
+    add_image_size('页面顶部栏', 1500, 350, true);
   }
 
   add_action('after_setup_theme', 'university_features');
