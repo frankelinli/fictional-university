@@ -1,0 +1,10 @@
+.acf-baidu-map .address-info {
+  height: 40px;
+  padding: 5px 10px;
+  font-size: 13px;
+  line-height: 30px;
+  text-wrap: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  box-sizing: border-box;
+}

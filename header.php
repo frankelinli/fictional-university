@@ -35,7 +35,9 @@
             <li <?php if (get_post_type() == 'event' OR is_page('past-events')) echo 'class="current-menu-item"'; ?>>
               <a href="<?php echo get_post_type_archive_link('event'); ?>">活动</a>
             </li>
-            <li><a href="#">校园</a></li>
+            <li <?php if (get_post_type() == 'campus') echo 'class="current-menu-item"'; ?>>
+              <a href="<?php echo get_post_type_archive_link('campus'); ?>">校区</a>
+            </li>
             <li
               <?php
                 // 如果当前页面类型是文章，则博客会被标记为当前项

@@ -1,4 +1,7 @@
 <?php
+  define( 'FIC_UNI_PATH', plugin_dir_path( __FILE__ ) );
+  include FIC_UNI_PATH . 'includes/dotenv.php';
+
   // banner模块
   function pageBanner($args=[]) {
     if (empty($args['title'])) {
@@ -45,6 +48,9 @@
     // 第四个参数为当前注入的脚本的版本
     // 第五个参数声明是否需要在head标签里加载，如果为false则在body标签里加载
     wp_enqueue_script('university_main_js', get_theme_file_uri('/build/index.js'), array('jquery'), '1.0.0', true);
+    
+    // 加载百度地图api
+    wp_enqueue_script('baiduMap', '//api.map.baidu.com/api?v=1.0&type=webgl&callback=initBaiduMapFunction&ak=H4pCsPnqtBTQ9JHRgp1ARvwUIX6QbQtr' . getenv('BAIDU_MAP_KEY'), null, '1.0.0', true);
   }
 
   // 添加加载样式表的钩子
@@ -91,8 +97,38 @@
       $query->set('orderby', 'title');
       $query->set('order', 'ASC');
     }
+    
+    // 如果当前不是管理员界面，且是校区存档页面，且是主查询，则修改查询条件
+    if (!is_admin() and is_post_type_archive('campus') and $query->is_main_query()) {
+      $query->set('posts_per_page', -1); // 不限制返回的校区数量
+    }
   }
 
   // 在查询前执行函数
   add_action('pre_get_posts', 'university_adjust_queries');
+
+  // 获取主题目录对应的url路径
+  function fic_uni_get_url( $filename = '' ) {
+    if ( ! defined( 'FIC_UNI_URL' ) ) {
+      define( 'FIC_UNI_URL', get_template_directory_uri() );
+    }
+    return FIC_UNI_URL . ltrim( $filename, '/' );
+  }
+
+  // 获取主题目录对应的path路径
+  function fic_uni_get_path( $filename = '' ) {
+    if ( ! defined( 'FIC_UNI_PATH' ) ) {
+      define( 'FIC_UNI_PATH', plugin_dir_path( __FILE__ ) );
+    }
+    return FIC_UNI_PATH . ltrim( $filename, '/' );
+  }
+
+  // 设置百度地图API密钥
+  add_filter('acf/fields/baidu_map/api', function($api) {
+    $api['ak'] = getenv('BAIDU_MAP_API_KEY');
+    return $api;
+  });
+
+  // 使用ACF钩子添加百度地图的字段类型
+  include_once FIC_UNI_PATH . "includes/class-acf-field-baidu-map.php";
 ?>
