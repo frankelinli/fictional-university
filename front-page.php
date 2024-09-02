@@ -42,9 +42,14 @@
             get_template_part('template-parts/content', 'event');
           }
           wp_reset_postdata();
-        ?>
+          ?>
 
-        <p class="t-center no-margin"><a href="<?php echo get_post_type_archive_link('event'); ?>" class="btn btn--blue">查看所有活动</a></p>
+        <p class="t-center no-margin">
+          <a
+            href="<?php echo get_post_type_archive_link('event'); ?>"
+            class="btn btn--blue"
+          >查看所有活动</a>
+        </p>
       </div>
     </div>
     <div class="full-width-split__two">
@@ -57,9 +62,9 @@
             'post_status' => 'publish', // 指定博客状态'
           ));
 
-          while($homepagePosts->have_posts()) {
+          while ($homepagePosts->have_posts()) {
             $homepagePosts->the_post();
-        ?>
+            ?>
             <div class="event-summary">
               <a class="event-summary__date event-summary__date--beige t-center" href="<?php the_permalink(); ?>">
                 <span class="event-summary__month"><?php the_time('M'); ?></span>
@@ -70,20 +75,25 @@
                   <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
                 </h5>
                 <p><?php
-                  if (has_excerpt()) {
-                    echo get_the_excerpt(); // 如果有摘要，则显示摘要
-                  } else {
-                    echo wp_trim_words(get_the_content(), 36); // 否则显示内容的前36个字符
-                  }
+                if (has_excerpt()) {
+                  echo get_the_excerpt(); // 如果有摘要，则显示摘要
+                } else {
+                  echo wp_trim_words(get_the_content(), 36); // 否则显示内容的前36个字符
+                }
                 ?><a href="<?php the_permalink(); ?>" class="nu gray">阅读更多</a></p>
               </div>
             </div>
-        <?php
+            <?php
           }
           wp_reset_postdata(); // 重置文章数据
-        ?>
+          ?>
 
-        <p class="t-center no-margin"><a href="<?php echo site_url('/blog'); ?>" class="btn btn--yellow">查看所有博客文章</a></p>
+        <p class="t-center no-margin">
+          <a
+            href="<?php echo site_url('/blog'); ?>"
+            class="btn btn--yellow"
+          >查看所有博客文章1</a>
+        </p>
       </div>
     </div>
   </div>
@@ -91,7 +101,10 @@
   <div class="hero-slider">
     <div data-glide-el="track" class="glide__track">
       <div class="glide__slides">
-        <div class="hero-slider__slide" style="background-image: url(<?php echo get_theme_file_uri('/images/bus.jpg'); ?>)">
+        <div
+          class="hero-slider__slide"
+          style="background-image: url(<?php echo get_theme_file_uri('/images/bus.jpg'); ?>)"
+        >
           <div class="hero-slider__interior container">
             <div class="hero-slider__overlay">
               <h2 class="headline headline--medium t-center">免费交通</h2>
@@ -100,7 +113,10 @@
             </div>
           </div>
         </div>
-        <div class="hero-slider__slide" style="background-image: url(<?php echo get_theme_file_uri('/images/apples.jpg'); ?>)">
+        <div
+          class="hero-slider__slide"
+          style="background-image: url(<?php echo get_theme_file_uri('/images/apples.jpg'); ?>)"
+        >
           <div class="hero-slider__interior container">
             <div class="hero-slider__overlay">
               <h2 class="headline headline--medium t-center">一天一颗苹果</h2>
@@ -109,7 +125,10 @@
             </div>
           </div>
         </div>
-        <div class="hero-slider__slide" style="background-image: url(<?php echo get_theme_file_uri('/images/bread.jpg'); ?>)">
+        <div
+          class="hero-slider__slide"
+          style="background-image: url(<?php echo get_theme_file_uri('/images/bread.jpg'); ?>)"
+        >
           <div class="hero-slider__interior container">
             <div class="hero-slider__overlay">
               <h2 class="headline headline--medium t-center">免费食物</h2>

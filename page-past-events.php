@@ -4,7 +4,7 @@
     'title' => '过去的活动',
     'subtitle' => '回顾我们过去的活动'
   ]);
-?>
+  ?>
 
   <div class="container container--narrow page-section">
     <?php
@@ -24,7 +24,7 @@
           ]
         ]
       ]);
-      while($pastEvents->have_posts()) {
+      while ($pastEvents->have_posts()) {
         $pastEvents->the_post();
         get_template_part('template-parts/content', 'event');
       }
@@ -32,7 +32,7 @@
         'total' => $pastEvents->max_num_pages // 将自定义查询得到的所有页面数量传给分页器
       ]); // 输出分页器
       wp_reset_postdata();
-    ?>
+      ?>
   </div>
 
 <?php

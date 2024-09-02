@@ -1,0 +1,10 @@
+{
+  semi: false, // 行尾分号
+  singleQuote: true, // 单引号
+  trailingComma: 'es5', // 尾随逗号
+  arrowParens: 'avoid', // 箭头函数括号
+  spaceBeforeFunctionParen: true, // 函数名和括号之间的空格
+  printWidth: 120, // 换行长度
+  tabWidth: 2, // 缩进宽度
+  useTabs: false, // 使用空格替换制表符
+}

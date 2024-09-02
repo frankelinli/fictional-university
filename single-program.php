@@ -20,7 +20,7 @@
     </div>
 
     <div class="generic-content">
-      <?php the_content(); ?>
+      <?php the_field('main_body_content'); ?>
     </div>
 
     <?php
@@ -47,14 +47,14 @@
 
         while ($relatedProfessors->have_posts()) {
           $relatedProfessors->the_post();
-    ?>
+          ?>
           <li class="professor-card__list-item">
             <a class="professor-card" href="<?php echo get_the_permalink(); ?>">
               <img class="professor-card__image" src="<?php the_post_thumbnail_url('教授横向缩略图'); ?>">
               <span class="professor-card__name"><?php the_title(); ?></span>
             </a>
           </li>
-    <?php
+          <?php
         }
         echo '</ul>';
       }
@@ -107,18 +107,18 @@
         echo '<hr class="section-break">';
         echo '<h2 class="headline headline--medium">这些校区开设' . get_the_title() . '</h2>';
         echo '<ul class="link-list min-list">';
-        foreach($relatedCampuses as $campus) {
-      ?>
+        foreach ($relatedCampuses as $campus) {
+          ?>
           <li>
             <a href="<?php echo get_the_permalink($campus); ?>">
               <?php echo $campus->post_title; ?>
             </a>
           </li>
-      <?php
+          <?php
         }
         echo '</ul>';
       }
-    ?>
+      ?>
   </div>
 <?php
   get_footer();
