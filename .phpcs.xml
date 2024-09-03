@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<ruleset name="项目编码风格标准">
+    <description>自定义编码标准</description>
+
+    <!-- 继承 PSR12 规则集 -->
+    <rule ref="PSR12" />
+
+    <!-- 禁用文件头检测规则 -->
+    <rule ref="Generic.Files.LineLength">
+        <properties>
+            <property name="absoluteLineLimit" value="0"/>
+        </properties>
+    </rule>
+
+    <!-- 代码缩进为 2 个空格 -->
+    <rule ref="Generic.WhiteSpace.ScopeIndent">
+        <properties>
+            <property name="indent" value="2"/>
+        </properties>
+    </rule>
+
+    <!-- 函数调用缩进为 2 个空格 -->
+    <rule ref="PSR2.Methods.FunctionCallSignature">
+        <properties>
+            <property name="indent" value="2"/>
+        </properties>
+    </rule>
+</ruleset>

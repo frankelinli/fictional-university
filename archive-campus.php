@@ -1,18 +1,20 @@
 <?php
   get_header();
-  pageBanner([
-    'title' => '我们的校区',
-    'subtitle' => '我们有几个位置便利的校区。'
-  ]);
-?>
+  pageBanner(
+    [
+      'title' => '我们的校区',
+      'subtitle' => '我们有几个位置便利的校区。'
+    ]
+  );
+  ?>
 
   <div class="container container--narrow page-section">
     <div class="acf-map">
       <?php
-        while(have_posts()) {
-          the_post();
-          $mapLocation = get_field('map_location');
-      ?>
+      while (have_posts()) {
+        the_post();
+        $mapLocation = get_field('map_location');
+        ?>
           <div
             class="marker"
             data-lat="<?php echo $mapLocation['lat']; ?>"
@@ -24,6 +26,4 @@
     </div>
   </div>
 
-<?php
-  get_footer();
-?>
+<?php get_footer(); ?>

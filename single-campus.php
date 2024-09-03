@@ -54,25 +54,25 @@
       ]);
 
       if ($relatedPrograms->have_posts()) {
-    ?>
+        ?>
         <hr class="section-break">
         <h2 class="headline headline--medium">该校区的学科</h2>
         <ul class="link-list min-list">
-      <?php
+        <?php
         while ($relatedPrograms->have_posts()) {
           $relatedPrograms->the_post();
-      ?>
+          ?>
           <li>
             <a href="<?php echo get_the_permalink(get_the_ID()); ?>">
               <?php the_title(); ?>
             </a>
           </li>
-    <?php
+          <?php
         }
         echo '</ul>';
       }
       wp_reset_postdata();
-    ?>
+      ?>
   </div>
 <?php
   get_footer();
